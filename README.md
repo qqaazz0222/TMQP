@@ -12,6 +12,9 @@ Fully Automated CT-Based Thoracic Muscle Quantification in Patients with Lung Di
     OS: Ubuntu 24.04 LTS
     Conda: 25.5.1
 
+업데이트 내용은 아래 문서를 확인하세요.
+[🗒️ 업데이트 내역](UPDATE.md)
+
 ## Installation
 
 이 저장소에서 제공하는 모듈을 실행하기 위해 Conda 기반 환경을 구성합니다.
