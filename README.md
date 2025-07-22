@@ -12,14 +12,6 @@ Fully Automated CT-Based Thoracic Muscle Quantification in Patients with Lung Di
     OS: Ubuntu 24.04 LTS
     Conda: 25.5.1
 
-## 환경 설정(콘다 기반)
-
-1. 가상환경 생성:`conda create -n {환경 이름} python=3.12`
-
-2. 가상환경 활성화: `conda activate {환경 이름}`
-
-3. 라이브러리 설치: `pip install -r requirements.txt`
-
 ## Installation
 
 이 저장소에서 제공하는 모듈을 실행하기 위해 Conda 기반 환경을 구성합니다.
