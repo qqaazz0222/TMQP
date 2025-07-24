@@ -158,14 +158,14 @@ def predict(model, transform, device, checkpoint_dir:str, working_list: list, ca
     pickle.dump(result, open(checkpoint_path, 'wb'))
     return result
        
-if __name__ == "__main__":
-    device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-    model_path = "resnet_ct_classifier_best.pth"
-    dicom_path = "test.dcm"
+# if __name__ == "__main__":
+#     device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
+#     model_path = "resnet_ct_classifier_best.pth"
+#     dicom_path = "test.dcm"
     
-    # Initialize model
-    model, transform = init_model(model_path, device)
+#     # Initialize model
+#     model, transform = init_model(model_path, device)
     
-    # Predict single DICOM file
-    predicted_label = predict(model, transform, device, dicom_path=dicom_path)
-    print(f"Predicted label for {dicom_path}: {predicted_label}")
+#     # Predict single DICOM file
+#     predicted_label = predict(model, transform, device, dicom_path=dicom_path)
+#     print(f"Predicted label for {dicom_path}: {predicted_label}")

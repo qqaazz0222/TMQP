@@ -13,6 +13,7 @@ Fully Automated CT-Based Thoracic Muscle Quantification in Patients with Lung Di
     Conda: 25.5.1
 
 업데이트 내용은 아래 문서를 확인하세요.
+
 [🗒️ 업데이트 내역](UPDATE.md)
 
 ## Installation
