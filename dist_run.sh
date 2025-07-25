@@ -37,8 +37,4 @@ done
 
 # 모든 백그라운드 작업이 완료될 때까지 대기
 wait
-
-# 모든 작업이 완료된 후 combine.py 스크립트를 실행
-echo "All patients processed. Combining results..."
-python combine.py
-echo "Results combined. Check the log directory for details."
+echo "All patients processed."
