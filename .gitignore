@@ -131,3 +131,5 @@ dmypy.json
 data/input
 data/working
 data/output
+
+counting_result.csv

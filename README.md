@@ -1,6 +1,7 @@
 # TMQP
 
 폐 질환 환자의 CT 기반 흉부 근육 정량화를 위한 완전 자동화된 딥러닝 및 규칙 기반 하이브리드 파이프라인
+
 Fully Automated CT-Based Thoracic Muscle Quantification in Patients with Lung Disease Using a Hybrid Deep Learning and Rule-Based Pipeline
 
 ### Note
