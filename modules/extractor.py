@@ -3,6 +3,8 @@ import cv2
 import math
 import numpy
 import pydicom
+import matplotlib
+matplotlib.use('Agg')  # GUI 백엔드 비활성화
 import matplotlib.pyplot as plt
 from scipy.spatial import ConvexHull, cKDTree
 import time

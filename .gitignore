@@ -134,3 +134,6 @@ data/output
 
 counting_result.csv
 nohup.out
+
+log/
+!log/.gitkeep
