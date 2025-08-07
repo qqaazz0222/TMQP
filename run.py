@@ -70,7 +70,9 @@ def init_args(console: Console) -> ArgumentParser:
                           help='모델 가중치 파일 경로')
         parser.add_argument('--threshold', type=float, default=0.9, 
                           help='CNN 모델의 확률 임계값')
-        
+        parser.add_argument('--device', type=int, default=0, 
+                          help='CNN 모델의 디바이스 ID')
+
         args = parser.parse_args()
         
         # 경로 유효성 검사
@@ -274,8 +276,17 @@ def main():
             os.makedirs(directory, exist_ok=True)
         
         # GPU/CPU 설정
-        device = torch.device("cuda" if torch.cuda.is_available() else "cpu")
-        log("info", f"Using device: {device}")
+        # GPU/CPU 설정
+        if torch.cuda.is_available():
+            if args.device >= 0 and args.device < torch.cuda.device_count():
+                device = torch.device(f"cuda:{args.device}")
+                log("info", f"Using GPU device: {device}")
+            else:
+                device = torch.device("cuda:0")
+                log("warning", f"Invalid device ID {args.device}, using default GPU: {device}")
+        else:
+            device = torch.device("cpu")
+            log("info", f"CUDA not available, using CPU: {device}")
         
         # 모델 초기화
         try:

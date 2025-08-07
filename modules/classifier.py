@@ -208,7 +208,7 @@ def classify(patient_id: str, input_dir: str, working_dir: str, output_dir: str,
         
         sub_dir_list = [d for d in os.listdir(cur_date_dir) 
                        if os.path.isdir(os.path.join(cur_date_dir, d))]
-        
+
         for sub_dir in sub_dir_list:
             cur_sub_input_dir = os.path.join(cur_date_dir, sub_dir)
             files = [os.path.join(cur_sub_input_dir, f) 
