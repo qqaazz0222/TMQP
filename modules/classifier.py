@@ -208,12 +208,24 @@ def classify(patient_id: str, input_dir: str, working_dir: str, output_dir: str,
         
         sub_dir_list = [d for d in os.listdir(cur_date_dir) 
                        if os.path.isdir(os.path.join(cur_date_dir, d))]
+        
+        if len(sub_dir_list) == 0:
+            _sub_dir = os.path.join(cur_date_dir, 'sub')
+            sub_dir_list = ['sub']
+            os.makedirs(_sub_dir, exist_ok=True)
+            
+            _files = [os.path.join(cur_date_dir, f) 
+                    for f in os.listdir(cur_date_dir) 
+                    if f.endswith('.dcm') and not f.startswith('.')]
+            
+            for _file in _files:
+                shutil.move(_file, _sub_dir)
 
         for sub_dir in sub_dir_list:
             cur_sub_input_dir = os.path.join(cur_date_dir, sub_dir)
             files = [os.path.join(cur_sub_input_dir, f) 
                     for f in os.listdir(cur_sub_input_dir) 
-                    if f.endswith('.dcm')]
+                    if f.endswith('.dcm') and not f.startswith('.')]
             
             # 파일이 충분하지 않으면 스킵
             if len(files) < 2:
