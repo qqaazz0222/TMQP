@@ -129,8 +129,13 @@ dmypy.json
 .pyre/
 
 data/input
+data/input_temp
 data/working
+data/working_temp
 data/output
+data/output_temp
+data/label
+data/temp.py
 
 counting_result.csv
 nohup.out

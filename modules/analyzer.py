@@ -417,7 +417,7 @@ def counting(pred_image_dict: dict, slide_location_dict: dict, input_dir: str, o
     Returns:
         None
     """
-    result_path = "counting_result.csv"
+    result_path = os.path.join(root_output_dir, "counting_result.csv")
     
     patient_id = output_dir.split("/")[-3]
     date = output_dir.split("/")[-2]
@@ -623,7 +623,9 @@ def counting(pred_image_dict: dict, slide_location_dict: dict, input_dir: str, o
                 
             filename = f"{patient_id}_{date}_{sd}_{sn}_{category}.csv"
             cur_result_path = os.path.join(csv_output_dir, filename)
-            cur_lookup_path = os.path.join(root_output_dir, f"{patient_id}_{date}_{sd}_{sn}_{category}.csv")
+            cur_lookup_dir = os.path.join(root_output_dir, "lookup")
+            os.makedirs(cur_lookup_dir, exist_ok=True)
+            cur_lookup_path = os.path.join(cur_lookup_dir, f"{patient_id}_{date}_{sd}_{sn}_{category}.csv")
             metadata = ["# Metadata:", 
                         f"# - Patient ID: {patient_id}",
                         f"# - Date: {date}",
