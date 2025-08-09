@@ -3,13 +3,12 @@ import sys
 import json
 import torch
 import pickle
+import numpy as np
 import multiprocessing
 from argparse import ArgumentParser
 from rich.console import Console
 from pathlib import Path
 from typing import Optional, Dict, List, Tuple, Any
-
-# 모듈 import를 try-except로 감싸서 안전하게 처리
 try:
     from model.model import init_model, predict
     from modules.classifier import classify
@@ -127,8 +126,6 @@ def extract_helper(params: Tuple) -> Tuple:
         
     except Exception as e:
         log("error", f"Error in extract_helper for {working_file}: {e}")
-        # 빈 이미지 반환으로 프로세스 중단 방지
-        import numpy as np
         empty_image = np.zeros((512, 512, 3), dtype=np.uint8)
         
         # 안전한 메타데이터 생성
@@ -181,6 +178,7 @@ def extract_muscle(working_list: List[str], pred_list: List[str], category: str,
         checkpoint_path = os.path.join(checkpoint_dir, checkpoint)
         
         # 체크포인트 확인
+        # TODO: 임시로 비활성화
         if check_checkpoint(checkpoint_path):
             with open(checkpoint_path, "rb") as f:
                 return pickle.load(f)

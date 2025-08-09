@@ -369,41 +369,83 @@ def overlap(orig_image_dict: dict, pred_image_dict: dict, muscle_dir:str, abs_di
     Returns:
         None
     """
-    os.makedirs(overlap_dir, exist_ok=True)
-    os.makedirs(muscle_dir, exist_ok=True)
-    os.makedirs(abs_dir, exist_ok=True)
-    for category in ["in", "ex"]:
-        log("info", f"Overlapping {category.upper()} data")
-        cur_muscle_dir = os.path.join(muscle_dir, category)
-        cur_overlap_dir = os.path.join(overlap_dir, category)
-        cur_abs_dir = os.path.join(abs_dir, category)
-        os.makedirs(cur_muscle_dir, exist_ok=True)
-        os.makedirs(cur_overlap_dir, exist_ok=True)
-        os.makedirs(cur_abs_dir, exist_ok=True)
-        sn_list = list(orig_image_dict[category].keys())
-        for sn in sn_list:
-            log("info", f"Overlapping Series Number: {sn}")
-            cur_muscle_sn_dir = os.path.join(cur_muscle_dir, sn)
-            cur_overlap_sn_dir = os.path.join(cur_overlap_dir, sn)
-            cur_abs_sn_dir = os.path.join(cur_abs_dir, sn)
-            os.makedirs(cur_muscle_sn_dir, exist_ok=True)
-            os.makedirs(cur_overlap_sn_dir, exist_ok=True)
-            os.makedirs(cur_abs_sn_dir, exist_ok=True)
-            original_list = orig_image_dict[category][sn]
-            muscle_list = pred_image_dict[category][sn]
-            abs_list = pred_image_dict[f"{category}_abs"][sn]
-            for idx, (original_image, muscle_image) in enumerate(zip(original_list, muscle_list)):
-                log_progress(idx + 1, len(original_list), "Overlapping Original-Muscle")
-                plt.imsave(os.path.join(cur_muscle_sn_dir, f"{idx:03d}.png"), muscle_image)
-                overlap_image = cv2.addWeighted(original_image.astype(numpy.float32), 1, muscle_image.astype(numpy.float32), 1, 0)
-                overlap_image = numpy.clip(overlap_image, 0, 255).astype(numpy.uint8)
-                plt.imsave(os.path.join(cur_overlap_sn_dir, f"{idx:03d}.png"), overlap_image)
-            for idx, (original_image, abs_image) in enumerate(zip(original_list, abs_list)):
-                log_progress(idx + 1, len(original_list), "Overlapping Original-Abs")
-                overlap_image = cv2.addWeighted(original_image.astype(numpy.float32), 1, abs_image.astype(numpy.float32), 1, 0)
-                overlap_image = numpy.clip(overlap_image, 0, 255).astype(numpy.uint8)
-                plt.imsave(os.path.join(cur_abs_sn_dir, f"{idx:03d}.png"), abs_image)
-    log("success", f"Overlapping Finished! Check the result in {overlap_dir}")
+    try:
+        os.makedirs(overlap_dir, exist_ok=True)
+        os.makedirs(muscle_dir, exist_ok=True)
+        os.makedirs(abs_dir, exist_ok=True)
+        
+        for category in ["in", "ex"]:
+            log("info", f"Overlapping {category.upper()} data")
+            cur_muscle_dir = os.path.join(muscle_dir, category)
+            cur_overlap_dir = os.path.join(overlap_dir, category)
+            cur_abs_dir = os.path.join(abs_dir, category)
+            os.makedirs(cur_muscle_dir, exist_ok=True)
+            os.makedirs(cur_overlap_dir, exist_ok=True)
+            os.makedirs(cur_abs_dir, exist_ok=True)
+            
+            sn_list = list(orig_image_dict[category].keys())
+            for sn in sn_list:
+                log("info", f"Overlapping Series Number: {sn}")
+                cur_muscle_sn_dir = os.path.join(cur_muscle_dir, sn)
+                cur_overlap_sn_dir = os.path.join(cur_overlap_dir, sn)
+                cur_abs_sn_dir = os.path.join(cur_abs_dir, sn)
+                os.makedirs(cur_muscle_sn_dir, exist_ok=True)
+                os.makedirs(cur_overlap_sn_dir, exist_ok=True)
+                os.makedirs(cur_abs_sn_dir, exist_ok=True)
+                
+                original_list = orig_image_dict[category][sn]
+                muscle_list = pred_image_dict[category][sn]
+                
+                # 근육 이미지 처리
+                for idx, (original_image, muscle_image) in enumerate(zip(original_list, muscle_list)):
+                    log_progress(idx + 1, len(original_list), "Overlapping Original-Muscle")
+                    
+                    # 근육 이미지만 저장
+                    cv2.imwrite(os.path.join(cur_muscle_sn_dir, f"{idx:03d}.png"), 
+                               cv2.cvtColor(muscle_image, cv2.COLOR_RGB2BGR))
+                    
+                    # 원본과 근육 이미지 오버랩
+                    try:
+                        overlap_image = cv2.addWeighted(
+                            original_image.astype(numpy.float32), 0.7, 
+                            muscle_image.astype(numpy.float32), 0.3, 0
+                        )
+                        overlap_image = numpy.clip(overlap_image, 0, 255).astype(numpy.uint8)
+                        cv2.imwrite(os.path.join(cur_overlap_sn_dir, f"{idx:03d}.png"), 
+                                   cv2.cvtColor(overlap_image, cv2.COLOR_RGB2BGR))
+                    except Exception as e:
+                        log("warning", f"Failed to create muscle overlap image at index {idx}: {e}")
+                        # 폴백: 원본 이미지만 저장
+                        cv2.imwrite(os.path.join(cur_overlap_sn_dir, f"{idx:03d}.png"), 
+                                   cv2.cvtColor(original_image, cv2.COLOR_RGB2BGR))
+                
+                # 복근 이미지 처리 (존재하는 경우)
+                abs_key = f"{category}_abs"
+                if abs_key in pred_image_dict and sn in pred_image_dict[abs_key]:
+                    abs_list = pred_image_dict[abs_key][sn]
+                    for idx, (original_image, abs_image) in enumerate(zip(original_list, abs_list)):
+                        log_progress(idx + 1, len(original_list), "Overlapping Original-Abs")
+                        
+                        try:
+                            overlap_image = cv2.addWeighted(
+                                original_image.astype(numpy.float32), 0.7, 
+                                abs_image.astype(numpy.float32), 0.3, 0
+                            )
+                            overlap_image = numpy.clip(overlap_image, 0, 255).astype(numpy.uint8)
+                            cv2.imwrite(os.path.join(cur_abs_sn_dir, f"{idx:03d}.png"), 
+                                       cv2.cvtColor(overlap_image, cv2.COLOR_RGB2BGR))
+                        except Exception as e:
+                            log("warning", f"Failed to create abs overlap image at index {idx}: {e}")
+                            # 폴백: 원본 이미지만 저장
+                            cv2.imwrite(os.path.join(cur_abs_sn_dir, f"{idx:03d}.png"), 
+                                       cv2.cvtColor(original_image, cv2.COLOR_RGB2BGR))
+                else:
+                    log("warning", f"No abs data found for category {category}, series {sn}")
+                    
+        log("success", f"Overlapping Finished! Check the result in {overlap_dir}")
+        
+    except Exception as e:
+        log("error", f"Critical error in overlap function: {e}")
     
 @log_execution_time
 def counting(pred_image_dict: dict, slide_location_dict: dict, input_dir: str, output_dir: str, root_output_dir: str, size: tuple, visualize: bool = False):
