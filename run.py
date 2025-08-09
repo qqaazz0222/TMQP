@@ -452,21 +452,6 @@ def main():
                         log("success", "Overlap visualization completed")
                     except Exception as e:
                         log("error", f"Overlap visualization failed: {e}")
-                
-                # IoU 계산 및 시각화
-                if args.calculate:
-                    try:
-                        label_muscle_image_dict, label_flag = load_label(checkpoint_dir, label_dir)
-                        if label_flag:
-                            calculate(post_processed_muscle_image_dict, label_muscle_image_dict, output_dir)
-                            visualize(output_dir, (0, 1))
-                            log("success", "IoU calculation and visualization completed")
-                        else:
-                            log("warning", "No label data found for IoU calculation")
-                    except Exception as e:
-                        log("error", f"IoU calculation failed: {e}")
-                else:
-                    log("dimmed", "Skip Analysis")
                     
             except Exception as e:
                 log("error", f"Error processing dataset {dataset_idx+1}: {e}")
