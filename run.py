@@ -8,14 +8,13 @@ import multiprocessing
 from argparse import ArgumentParser
 from rich.console import Console
 from pathlib import Path
-from typing import Optional, Dict, List, Tuple, Any
+from typing import List, Tuple
 try:
     from model.model import init_model, predict
     from modules.classifier import classify
     from modules.postprocess import post_processing
     from modules.extractor import extract, calc_boundary
-    from modules.analyzer import load_label, calculate, overlap, counting
-    from modules.visualizer import visualize
+    from modules.analyzer import overlap, counting
     from utils.directoryHandler import check_checkpoint
     from utils.dicomHandler import *
     from utils.imageHandler import *
